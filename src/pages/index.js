@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google';
-import WalletHeader from '../components/Header';
 import { Typography, Button, Divider, Row, Col, Card, Space, Icon } from 'antd';
+import Link from 'next/link';
 
 const { Title, Text } = Typography;
 
@@ -45,8 +45,13 @@ export default function Home() {
           <Divider style={{ borderColor: '#40a9ff', margin: '20px 0' }} />
 
           <Space size="large">
+            <Link href="/rpc">
             <Button type="primary" size="large">Get Started</Button>
-            <Button type="default" size="large">Contribute Here</Button>
+            </Link>
+            <Link href="https://github.com/Shardeum/shardeum-dapp-boilerplate">
+            <Button type="default" size="large">Contribute</Button>
+            </Link>
+
           </Space>
         </Col>
       </Row>

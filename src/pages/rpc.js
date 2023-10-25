@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { Button, Card, Row, Col } from 'antd';
+import { useState, useContext } from 'react';
+import { Button, Card, Row, Col, Spin, notification } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { ethers } from 'ethers';
+import { WalletContext } from '@/context/WalletContext';
 
 function RPC() {
-    const [result, setResult] = useState("");
-    const [definition, setDefinition] = useState("");
-
+    const [result, setResult] = useState("Your result will appear here...");
+    const [definition, setDefinition] = useState("Definition of the selected RPC call will appear here...");    
+    const { connected } = useContext(WalletContext);
+    const [loading, setLoading] = useState(false);
+    const isConnected = connected;
     const provider = new ethers.providers.JsonRpcProvider('https://rpc.ankr.com/polygon_mumbai');
 
     const actions = [
@@ -73,6 +76,14 @@ function RPC() {
     ];
 
     const handleClick = async (action, def) => {
+        if (!isConnected) {
+            notification.error({
+                message: "Error",
+                description: "Please connect your wallet to proceed.",
+            });
+            return;
+        }
+        setLoading(true);
         try {
             const result = await action();
             setResult(result);
@@ -80,6 +91,8 @@ function RPC() {
         } catch (error) {
             setResult(`Error: ${error.message}`);
             setDefinition("");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -93,29 +106,32 @@ function RPC() {
                             key={index} 
                             style={{ margin: '5px' }} 
                             onClick={() => handleClick(item.action, item.definition)}
+                            disabled={loading}
                         >
                             {item.label}
                         </Button>
                     ))}
                 </Col>
                 <Col span={12}>
-                    {definition && (
-                        <Card title="RPC Definition" style={{ marginBottom: '20px' }}>
-                            <p>{definition}</p>
-                        </Card>
-                    )}
-                    {result && (
-                        <Card 
-                        title={
-                            <div>
-                                Result 
-                                {definition !== "" ? <CheckCircleOutlined style={{ color: 'green', marginLeft: '10px' }} /> : <CloseCircleOutlined style={{ color: 'red', marginLeft: '10px' }} />}
-                            </div>
-                        }
-                        style={{ width: '100%' }}
-                    >
-                        <p>{result}</p>
-                    </Card>
+                    {loading ? (
+                        <Spin size="large" style={{ display: 'block', margin: 'auto' }} />
+                    ) : (
+                        <>
+                            <Card title="RPC Definition" style={{ marginBottom: '20px' }}>
+                                <p>{definition}</p>
+                            </Card>
+                            <Card 
+                                title={
+                                    <div>
+                                        Result 
+                                        {definition !== "" ? <CheckCircleOutlined style={{ color: 'green', marginLeft: '10px' }} /> : <CloseCircleOutlined style={{ color: 'red', marginLeft: '10px' }} />}
+                                    </div>
+                                }
+                                style={{ width: '100%' }}
+                            >
+                                <p>{result}</p>
+                            </Card>
+                        </>
                     )}
                 </Col>
             </Row>
