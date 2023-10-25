@@ -11,12 +11,15 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "@metamask/detect-provider": "^2.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
     "antd": "^5.10.0",
+    "axios": "^1.5.1",
     "dotenv": "^16.3.1",
     "ethers": "^5.7.2",
     "next": "^13.5.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-router-dom": "^6.17.0",
     "viem": "^1.16.2",
     "wagmi": "^1.4.3"
   },

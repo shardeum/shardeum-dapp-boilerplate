@@ -1,5 +1,14 @@
-import '@/styles/globals.css'
+import '@/styles/globals.css';
+import WalletHeader from '@/components/Header';
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+function App({ Component, pageProps }) {
+  return (
+    <div>
+      <WalletHeader />
+      <Component {...pageProps} />
+      {/* Add other global components here if necessary, like a Footer */}
+    </div>
+  );
 }
+
+export default App;

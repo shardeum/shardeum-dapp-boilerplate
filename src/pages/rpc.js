@@ -1,0 +1,126 @@
+import { useState } from 'react';
+import { Button, Card, Row, Col } from 'antd';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { ethers } from 'ethers';
+
+function RPC() {
+    const [result, setResult] = useState("");
+    const [definition, setDefinition] = useState("");
+
+    const provider = new ethers.providers.JsonRpcProvider('https://rpc.ankr.com/polygon_mumbai');
+
+    const actions = [
+        {
+            label: 'Current Network',
+            action: async () => {
+                const network = await provider.getNetwork();
+                return `Current Network: ${network.name}`;
+            },
+            definition: "Gets the name of the current network configured with the provider."
+        },
+        {
+            label: 'Block Number',
+            action: async () => {
+                const blockNumber = await provider.getBlockNumber();
+                return `Current Block Number: ${blockNumber}`;
+            },
+            definition: "Gets the current block number of the Shardeum network."
+        },
+        {
+            label: 'Gas Price',
+            action: async () => {
+                const gasPrice = await provider.getGasPrice();
+                return `Current Gas Price: ${gasPrice.toString()}`;
+            },
+            definition: "Retrieves the current gas price on the network."
+        },
+        {
+            label: 'Balance of Address',
+            action: async () => {
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const balance = await provider.getBalance(accounts[0]);
+                return `Balance of ${accounts[0]}: ${ethers.utils.formatEther(balance)} SHM`;
+            },
+            definition: "Fetches the balance of a specific Shardeum address."
+        },
+        {
+            label: 'Latest Block',
+            action: async () => {
+                const block = await provider.getBlock('latest');
+                return `Latest Block Hash: ${block.hash}`;
+            },
+            definition: "Retrieves the hash of the latest block."
+        },
+        {
+            label: 'Transaction Count',
+            action: async () => {
+                const address = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+                const txCount = await provider.getTransactionCount(address);
+                return `Transaction Count for ${address}: ${txCount}`;
+            },
+            definition: "Gets the number of transactions sent from an address."
+        },
+        {
+            label: 'Code at Address',
+            action: async () => {
+                // Address of the Uniswap V2 router for demonstration.
+                const address = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+                const code = await provider.getCode(address);
+                return `Code at ${address}: ${code.slice(0,50)}...`; 
+            },
+            definition: "Fetches the contract code at a given address."
+        },
+    ];
+
+    const handleClick = async (action, def) => {
+        try {
+            const result = await action();
+            setResult(result);
+            setDefinition(def);
+        } catch (error) {
+            setResult(`Error: ${error.message}`);
+            setDefinition("");
+        }
+    };
+
+    return (
+        <div style={{ padding: '20px' }}>
+            <h1 style={{ textAlign: 'center' }}>RPC Page</h1>
+            <Row gutter={16}>
+                <Col span={12}>
+                    {actions.map((item, index) => (
+                        <Button 
+                            key={index} 
+                            style={{ margin: '5px' }} 
+                            onClick={() => handleClick(item.action, item.definition)}
+                        >
+                            {item.label}
+                        </Button>
+                    ))}
+                </Col>
+                <Col span={12}>
+                    {definition && (
+                        <Card title="RPC Definition" style={{ marginBottom: '20px' }}>
+                            <p>{definition}</p>
+                        </Card>
+                    )}
+                    {result && (
+                        <Card 
+                        title={
+                            <div>
+                                Result 
+                                {definition !== "" ? <CheckCircleOutlined style={{ color: 'green', marginLeft: '10px' }} /> : <CloseCircleOutlined style={{ color: 'red', marginLeft: '10px' }} />}
+                            </div>
+                        }
+                        style={{ width: '100%' }}
+                    >
+                        <p>{result}</p>
+                    </Card>
+                    )}
+                </Col>
+            </Row>
+        </div>
+    );
+}
+
+export default RPC;
