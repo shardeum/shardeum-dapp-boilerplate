@@ -1,0 +1,28 @@
+.header{
+    text-align: center;
+}
+.swapcard{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 2rem;
+    width:30%;
+    height: 50%;
+    margin:5% auto;
+    border-radius: 10px;
+    border: 2px solid rgb(210, 208, 206) ;
+    background-color: rgb(255, 254, 253);
+}
+.swapButton{
+    margin: 2px auto;
+    height: 60px;
+    font-size: large;
+    font-weight: bold;
+}
+.swapInput{
+    margin: 1px auto;
+    height: 60px;
+    font-size: large;
+    font-weight: bold;
+}
