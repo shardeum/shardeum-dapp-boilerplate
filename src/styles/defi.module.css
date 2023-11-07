@@ -2,27 +2,18 @@
     text-align: center;
 }
 .swapcard{
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 10px;
     padding: 2rem;
     width:30%;
+    gap: 10px;
     height: 50%;
     margin:5% auto;
     border-radius: 10px;
+    color: #ffffff;
     border: 2px solid rgb(210, 208, 206) ;
-    background-color: rgb(255, 254, 253);
-}
-.swapButton{
-    margin: 2px auto;
-    height: 60px;
-    font-size: large;
-    font-weight: bold;
-}
-.swapInput{
-    margin: 1px auto;
-    height: 60px;
-    font-size: large;
-    font-weight: bold;
+    background-color: #001529;
+
 }

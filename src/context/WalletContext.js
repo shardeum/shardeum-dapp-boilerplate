@@ -19,49 +19,49 @@ export const WalletProvider = ({ children }) => {
         setBalance(ethers.utils.formatEther(balance));
     }, []);
 
-const connectWallet = useCallback(async () => {
-    if (window.ethereum) {
-        try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const chainId = await provider.getNetwork().then(network => network.chainId);
-            if (chainId !== desiredNetwork) {
-                Modal.warning({
-                    title: 'Wrong Network',
-                    content: 'Please connect to the Shardeum Sphinx Dapp network.',
-                });
-                return;
+    const connectWallet = useCallback(async () => {
+        if (window.ethereum) {
+            try {
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const chainId = await provider.getNetwork().then(network => network.chainId);
+                if (chainId !== desiredNetwork) {
+                    Modal.warning({
+                        title: 'Wrong Network',
+                        content: 'Please connect to the Shardeum Sphinx Dapp network.',
+                    });
+                    return;
+                }
+
+                // Set signer
+                const signerInstance = provider.getSigner();
+                setSigner(signerInstance);
+
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                setSelectedAddress(accounts[0]);
+                await updateBalance(accounts[0]);
+                setConnected(true);
+            } catch (error) {
+                console.error(error);
             }
-
-            // Set signer
-            const signerInstance = provider.getSigner();
-            setSigner(signerInstance);
-
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            setSelectedAddress(accounts[0]);
-            await updateBalance(accounts[0]);
-            setConnected(true);
-        } catch (error) {
-            console.error(error);
+        } else {
+            Modal.error({
+                title: 'Metamask is not installed',
+                content: 'Please install it from https://metamask.io',
+            });
         }
-    } else {
-        Modal.error({
-            title: 'Metamask is not installed',
-            content: 'Please install it from https://metamask.io',
-        });
-    }
-}, [updateBalance]);
+    }, [updateBalance]);
 
 
     const disconnectWallet = useCallback(() => {
         setSelectedAddress(null);
         setBalance(null);
         setConnected(false);
-        setSigner(null); 
+        setSigner(null);
         message.success('Wallet disconnected');
     }, []);
 
     return (
-        <WalletContext.Provider value={{ connected, selectedAddress, balance,visible,signer,setVisible,connectWallet, disconnectWallet }}>
+        <WalletContext.Provider value={{ connected, selectedAddress, balance,visible,signer,setVisible,connectWallet, disconnectWallet,setSelectedAddress,setBalance }}>
             {children}
         </WalletContext.Provider>
     );
