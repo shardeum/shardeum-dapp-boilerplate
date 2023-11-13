@@ -1,0 +1,19 @@
+.header{
+    text-align: center;
+}
+.swapcard{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    width:30%;
+    gap: 10px;
+    height: 50%;
+    margin:5% auto;
+    border-radius: 10px;
+    color: #ffffff;
+    border: 2px solid rgb(210, 208, 206) ;
+    background-color: #001529;
+
+}
