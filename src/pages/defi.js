@@ -1,9 +1,13 @@
 import { useState, useContext,useEffect } from 'react';
 import { ArrowDownOutlined  } from '@ant-design/icons';
-import { Button,Space,Avatar,  Input, Select,Card,Flex, Row, Col, Spin, notification,Typography } from 'antd';
-import { ethers } from 'ethers';
+import { Button,Space,Avatar, notification,  Input, Select,Card,Flex, Row, Col, Spin,Typography } from 'antd';
+import { BigNumber, ethers } from 'ethers';
 import { WalletContext } from '@/context/WalletContext';
 import styles from '@/styles/defi.module.css';
+import IERC20ABI from "../abis/IERC20";
+import config from '@/config/config';
+import UniswapAbi from "../abis/UniswapAbi";
+
 
 const swapTokenABI= [ {
     "inputs": [],
@@ -415,15 +419,6 @@ const TSTContractAddress="0x5a1Cdd07b84EA4273283a717AD722c00EdE6E79E" ;
 const {Option}=Select
 const {Text}=Typography
 
-function checkConnection(conn){
-    if(!conn){
-        notification.error({
-            message: "Error",
-            description: "Please connect your wallet to proceed.",
-        });
-        return;
-    }
-}
 function DeFi() {
 
     const { connected,signer,balance,selectedAddress,connectWallet } = useContext(WalletContext);
@@ -432,75 +427,254 @@ function DeFi() {
     const [amountFrom,setFrom]=useState(1)
     const [amountTo,setTo]=useState(1)
     const [swapError,setSwapError]=useState(" ")
-    const isConnected=connected
+    const [balanceError,setBalanceError]=useState(" ")
+
+    const [isLoading,setLoading] = useState(false)
     const swapContract= new ethers.Contract(swapContractAddress,swapTokenABI,signer);
     const tokenContract= new ethers.Contract(TSTContractAddress,TSTTOKENABI,signer)
+    const shmbalance=Number(balance)
+
+    const shmTokenContract = new ethers.Contract(config.SHMToken,IERC20ABI.abi,signer);
+    const tstTokenContract = new ethers.Contract(config.TSTToken,IERC20ABI.abi,signer);
+    const uniswapRouterContract  = new ethers.Contract(config.UniswapRouter,UniswapAbi,signer);
+
+
+    const [shmAllowance, setSHMAllowance] = useState("0")
+    const [tstAllowance, setTSTAllowance] = useState("0")
+
+    const [tstInputAmount, setTSTInputAmount] = useState(0);
+    const [shmInputAmount, setSHMInputAmount] = useState(0);
+
+
+    useEffect(() => {
+        if (selectedAddress) {
+            loadAllowance()
+        }
+    },[selectedAddress])
+
+
+    useEffect(() => {
+        console.log({amountTo})
+    },[amountTo])
+    const loadAllowance = async() => {
+        const shmAllowance = await shmTokenContract.allowance(selectedAddress,config.UniswapRouter)
+        const tstAllowance = await tstTokenContract.allowance(selectedAddress,config.UniswapRouter)
+        setSHMAllowance(BigNumber.from(shmAllowance).toString())
+        setTSTAllowance(BigNumber.from(tstAllowance).toString())
+
+    }
+
+
     async function mintTST(){
-        const mint= await tokenContract.mint(selectedAddress,25)
-    }
-
-    async function swapTstToSHM(){
-        console.log(amountFrom)
         try{
-            const swaptst=await swapContract.swapTSTForSHM(amountFrom,0);
+            const mint= await tokenContract.mint(selectedAddress,BigInt(25 * Math.pow(10,18)))
         }
         catch(error){
-            setSwapError(`Transaction Reverted`)
+            notification.error({
+                message:"Error",
+                description:" Minting Error occured"
+
+            })
+        }
+    }
+
+    // async function swapTstToSHM(){
+    //     const balance=await tokenContract.balanceOf(selectedAddress);
+    //     if(amountFrom >Number(balance)){
+    //         notification.error({
+    //             message:"Error",
+    //             description:" Insufficient SHM"
+
+    //         })
+    //         return;
+    //     }
+    //     else{
+    //         try{
+    //             const swaptst=await swapContract.swapTSTForSHM(amountFrom,0);
+    //         }
+    //         catch(error){
+    //             notification.error({
+    //                 message:"Error",
+    //                 description:" Transcation reversed"
+
+    //             })
+
+
+    //         }
+    //     }
+    // }
+    // async function swapSHMToTST(){
+    //     if(amountFrom > shmbalance){
+    //         notification.error({
+    //             message:"Error",
+    //             description:" Insufficient SHM"
+
+    //         })
+
+    //         return
+    //     }
+    //     else{
+    //         try{
+    //             const swaptst=await swapContract.swapSHMForTST(amountFrom,0);
+    //         }
+    //         catch(error){
+    //             notification.error({
+    //                 message:"Error",
+    //                 description:" Transcation reversed"
+
+    //             })
+
+    //         }
+    //     }
+    // }
+
+    useEffect(() => {
+        updatePrice()
+    },[tstInputAmount,shmInputAmount])
+
+
+    const handleApprove = async () => {
+        const tokenContract = tokenFrom === "SHM" ? shmTokenContract : tstTokenContract
+        const amount = tokenFrom === "SHM" ? shmInputAmount : tstInputAmount
+        const finalAmount = ethers.utils.parseUnits(amount, "ether");
+        await tokenContract.approve(config.UniswapRouter, finalAmount);
+        await loadAllowance()
+
+    }
+    const handleSwap = async () => {
+        const inAmount = tokenFrom === "SHM" ? shmInputAmount:tstInputAmount
+        // const outAmount = tokenFrom === "SHM" ? tstInputAmount:shmInputAmount
+        const path = tokenFrom === "SHM" ? [config.SHMToken, config.TSTToken] : [config.TSTToken, config.SHMToken];
+
+        await uniswapRouterContract.swapExactTokensForTokensSupportingFeeOnTransferTokens( ethers.utils.parseUnits(inAmount, "ether"),
+            "0",
+            path,
+            selectedAddress,
+            parseInt(new Date().valueOf()/1000)+10000
+        );
+    }
+    const handleAction = async() => {
+        setLoading(true)
+        const isApprovalTxn = tokenFrom === "SHM" ? ethers.utils.parseUnits(shmAllowance.toString()).lte(shmInputAmount.toString()) : ethers.utils.parseUnits(tstAllowance.toString()).lte(tstInputAmount.toString());
+        const func = isApprovalTxn ? handleApprove : handleSwap
+
+        try {
+            await func()
+        } catch (err) {
+
+        }
+
+        setLoading(false)
+    }
+
+    const updatePrice = async () => {
+        const path = tokenFrom === "SHM" ? [config.SHMToken, config.TSTToken] : [config.TSTToken, config.SHMToken];
+        const rawAmount = tokenFrom === "SHM" ? shmInputAmount : tstInputAmount
+        console.log({rawAmount})
+        if (rawAmount) {
+            const toAmount =  ethers.utils.parseUnits(rawAmount, "ether");
+            const resp = await uniswapRouterContract.getAmountsOut(toAmount,path);
+            const amount1 = BigNumber.from(resp[1]).mul(100-config.Slippage).div(100).toString();
+            console.log({ amount1 })
+            setTo(amount1)
 
         }
     }
-    async function swapSHMToTST(){
-        console.log(amountFrom)
-        try{
-            const swaptst=await swapContract.swapSHMForTST(amountFrom,0);
+
+    const renderSwapButtonText = () => {
+        if (isLoading) {
+            return "Loading..."
         }
-        catch(error){
-            setSwapError(`Transaction Reverted`)
+
+        if (( tokenFrom === "SHM" && !tstInputAmount) || (tokenFrom !== "SHM" && !shmInputAmount) ) {
+            return "Swap Token"
+        }
+
+        if (!selectedAddress) {
+            return "Connect Wallet"
+        } else if (tokenFrom === "SHM" && ethers.utils.parseUnits(shmInputAmount.toString()).lte(shmAllowance.toString())) {
+            return "Approve SHM"
+        }  else if (tokenFrom === "TST" && ethers.utils.parseUnits(tstInputAmount.toString()).lte(tstAllowance.toString())) {
+            return "Approve TST"
+        } else {
+            return "Swap Token"
         }
     }
 
     return (
         <div>
-            <h1 className={styles.header}>DeFi Page</h1>
+            <h1 className={[styles.header,]}>DeFi Page</h1>
 
             <div className={styles.swapcard} style={{ width: 305 }}>
                 <Text style={styleswap.textstyle}>Swap </Text>
-
                 <Space direction='vertical' style={styleswap.swapContainer}>
-                    <Text style={{padding:'0.2rem', color:'#ffffff' }}> From</Text>
+                    <Text style={{padding:'0.2rem', color:'#ffffff' }}>From</Text>
+                    {/* <Text style={{padding:'0.2rem', color:'#ffffff' }}> {balanceError}</Text> */}
                     <Space direction='horizontal'style={{backgroundColor:'#ffffff'}} >
-                        <Input disabled={!connected} className={styles.swapInput}type='number' placeholder='0' name="amountToSwap" style={{width:100,borderStyle:'none' }} required onChange={(e)=>{setTo(e.target.value);setFrom(e.target.value)}} value={amountFrom}/>
-                        <Select defaultValue="TST" style={styleswap.selectStyle} onChange={(value)=>{setTokenFrom(value)}}>
+                        <Input disabled={!connected} className={styles.swapInput} type='number' placeholder='0' name="amountToSwap" style={{ width: 100, borderStyle: 'none' }}
+                               required
+                               onChange={(e) => {
+                                   console.log("ASasss",tokenFrom)
+                                   setTo(e.target.value);
+                                   setFrom(e.target.value)
+                                   if (tokenFrom === "SHM") {
+                                       setSHMInputAmount(e.target.value)
+                                   } else if(tokenFrom === "TST"){
+                                       setTSTInputAmount(e.target.value)
+                                   }
+                               }}
+                               value={amountFrom} />
+                        <Select defaultValue="TST" style={styleswap.selectStyle}
+                                onChange={(value) => {
+                                    setTokenFrom(value)
+
+                                }}>
+
                             <Option value="TST">TST</Option>
                             <Option value="SHM">SHM</Option>
                         </Select>
                     </Space>
                 </Space>
-                <div style={{height:'30px',width:'30px',padding:'0.2rem',border:'1px solid #ffffff',borderRadius:'50%',color:'#ffffff',backgroundColor:'#001529',position: 'absolute', left: '42%', top: '42%',zIndex:'2000'}}><ArrowDownOutlined style={{padding:'0.2rem',caretColor:'#ffffff'}}/></div>
+
+                <div style={{height:'30px',width:'30px',padding:'0.2rem',border:'1px solid #ffffff',borderRadius:'50%',color:'#ffffff',backgroundColor:'#001529',position: 'absolute', left: '42%', top: '45%',zIndex:'2000'}}><ArrowDownOutlined style={{padding:'0.2rem',caretColor:'#ffffff'}}/></div>
+
                 <Space direction='vertical' style={styleswap.swapContainer}>
                     <Text style={{padding:'0.2rem',color:'#ffffff'}}> To get</Text>
                     <Space direction='horizontal' style={{backgroundColor:'#ffffff'}}>
-                        <Input disabled={!connected} style={{borderCollapse:'collapse',width:100,borderStyle:'none' }} type='number' placeholder='0' name="amountSwapTo" required value={amountTo}/>
+                        <Input disabled style={{ borderCollapse: 'collapse', width: 100, borderStyle: 'none' }}
+                               type='number' placeholder='0' name="amountSwapTo"
+                               required
+
+                               value={ethers.utils.formatEther(amountTo?amountTo.toString():"0")}
+
+                               onChange={(e) => {
+                                   if (tokenTo === "SHM") {
+                                       setSHMInputAmount(e.target.value)
+                                   } else if(tokenTo === "TST"){
+                                       setTSTInputAmount(e.target.value)
+                                   }
+                               }}/>
                         <Select defaultValue="SHM" style={styleswap.selectStyle} onChange={(value)=>{setTokenTo(value)}}>
                             <Option value="TST">TST</Option>
                             <Option value="SHM">SHM</Option>
                         </Select>
                     </Space>
                 </Space>
-                <Text style={{color:'#ffffff'}}>{swapError}</Text>
+
                 <Button type="primary" disabled={!connected}  onClick={()=>{
 
-                    if(tokenFrom==='TST' && tokenTo !='TST') {
-                        swapTstToSHM();
+                    if(tokenFrom !== tokenTo) {
+                        handleAction()
                     }
-                    else if(tokenFrom==='SHM' && tokenTo !='SHM'){
-                        swapSHMToTST();
 
-                    }
                     else{
-                        setSwapError("You cannot swap the same token")
+                        notification.error({
+                            message:"Error",
+                            description:"You cannot Swap the same token"
+
+                        })
                     }
-                }} style={{color:'#ffffff',width:'100%',height:50,marginTop:10}} >Swap Token</Button>
+                }} style={{ color: '#ffffff', width: '100%', height: 50, marginTop: 10 }} >{renderSwapButtonText()}</Button>
             </div>
             <Button type="primary"  disabled={!connected} style={{position:'absolute',bottom:1,right:0,color:'#ffffff',width:'10%',height:50,marginTop:10}} onClick={mintTST} >Mint TST Token</Button>
         </div>
