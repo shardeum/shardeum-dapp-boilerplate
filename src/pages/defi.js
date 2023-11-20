@@ -75,6 +75,7 @@ const swapTokenABI= [ {
         "stateMutability": "view",
         "type": "function"
     }];
+
 const swapContractAddress="0x63fC85f4Fcdbf7BC4EEE7003fd47bBF08d0B33FB";
 const TSTTOKENABI= [{
     "inputs": [
@@ -413,6 +414,7 @@ const TSTTOKENABI= [{
         "stateMutability": "nonpayable",
         "type": "function"
     }]
+
 const TSTContractAddress="0x5a1Cdd07b84EA4273283a717AD722c00EdE6E79E" ;
 
 // pages/defi.js
@@ -426,20 +428,14 @@ function DeFi() {
     const [tokenTo,setTokenTo]=useState("SHM")
     const [amountFrom,setFrom]=useState(1)
     const [amountTo,setTo]=useState(1)
-    const [swapError,setSwapError]=useState(" ")
-    const [balanceError,setBalanceError]=useState(" ")
 
     const [isLoading,setLoading] = useState(false)
-    const swapContract= new ethers.Contract(swapContractAddress,swapTokenABI,signer);
     const tokenContract= new ethers.Contract(TSTContractAddress,TSTTOKENABI,signer)
-    const shmbalance=Number(balance)
 
-    const shmTokenContract = new ethers.Contract(config.SHMToken,IERC20ABI.abi,signer);
     const tstTokenContract = new ethers.Contract(config.TSTToken,IERC20ABI.abi,signer);
     const uniswapRouterContract  = new ethers.Contract(config.UniswapRouter,UniswapAbi,signer);
 
 
-    const [shmAllowance, setSHMAllowance] = useState("0")
     const [tstAllowance, setTSTAllowance] = useState("0")
 
     const [tstInputAmount, setTSTInputAmount] = useState(0);
@@ -453,15 +449,11 @@ function DeFi() {
     },[selectedAddress])
 
 
-    useEffect(() => {
-        console.log({amountTo})
-    },[amountTo])
-    const loadAllowance = async() => {
-        const shmAllowance = await shmTokenContract.allowance(selectedAddress,config.UniswapRouter)
-        const tstAllowance = await tstTokenContract.allowance(selectedAddress,config.UniswapRouter)
-        setSHMAllowance(BigNumber.from(shmAllowance).toString())
-        setTSTAllowance(BigNumber.from(tstAllowance).toString())
 
+
+    const loadAllowance = async() => {
+        const tstAllowance = await tstTokenContract.allowance(selectedAddress,config.UniswapRouter)
+        setTSTAllowance(BigNumber.from(tstAllowance).toString())
     }
 
 
@@ -478,55 +470,6 @@ function DeFi() {
         }
     }
 
-    // async function swapTstToSHM(){
-    //     const balance=await tokenContract.balanceOf(selectedAddress);
-    //     if(amountFrom >Number(balance)){
-    //         notification.error({
-    //             message:"Error",
-    //             description:" Insufficient SHM"
-
-    //         })
-    //         return;
-    //     }
-    //     else{
-    //         try{
-    //             const swaptst=await swapContract.swapTSTForSHM(amountFrom,0);
-    //         }
-    //         catch(error){
-    //             notification.error({
-    //                 message:"Error",
-    //                 description:" Transcation reversed"
-
-    //             })
-
-
-    //         }
-    //     }
-    // }
-    // async function swapSHMToTST(){
-    //     if(amountFrom > shmbalance){
-    //         notification.error({
-    //             message:"Error",
-    //             description:" Insufficient SHM"
-
-    //         })
-
-    //         return
-    //     }
-    //     else{
-    //         try{
-    //             const swaptst=await swapContract.swapSHMForTST(amountFrom,0);
-    //         }
-    //         catch(error){
-    //             notification.error({
-    //                 message:"Error",
-    //                 description:" Transcation reversed"
-
-    //             })
-
-    //         }
-    //     }
-    // }
 
     useEffect(() => {
         updatePrice()
@@ -534,7 +477,7 @@ function DeFi() {
 
 
     const handleApprove = async () => {
-        const tokenContract = tokenFrom === "SHM" ? shmTokenContract : tstTokenContract
+        const tokenContract = tokenFrom === "TST" && tstTokenContract
         const amount = tokenFrom === "SHM" ? shmInputAmount : tstInputAmount
         const finalAmount = ethers.utils.parseUnits(amount, "ether");
         await tokenContract.approve(config.UniswapRouter, finalAmount);
@@ -543,19 +486,30 @@ function DeFi() {
     }
     const handleSwap = async () => {
         const inAmount = tokenFrom === "SHM" ? shmInputAmount:tstInputAmount
-        // const outAmount = tokenFrom === "SHM" ? tstInputAmount:shmInputAmount
         const path = tokenFrom === "SHM" ? [config.SHMToken, config.TSTToken] : [config.TSTToken, config.SHMToken];
 
-        await uniswapRouterContract.swapExactTokensForTokensSupportingFeeOnTransferTokens( ethers.utils.parseUnits(inAmount, "ether"),
-            "0",
-            path,
-            selectedAddress,
-            parseInt(new Date().valueOf()/1000)+10000
-        );
+        if (tokenFrom === "SHM") {
+            await uniswapRouterContract.swapExactETHForTokensSupportingFeeOnTransferTokens(
+
+                "0",
+                path,
+                selectedAddress,
+                parseInt(new Date().valueOf() / 1000) + 10000,
+                {value: ethers.utils.parseUnits(inAmount, "ether"),}
+            );
+        } else {
+            await uniswapRouterContract.swapExactTokensForETHSupportingFeeOnTransferTokens( ethers.utils.parseUnits(inAmount, "ether"),
+                "0",
+                path,
+                selectedAddress,
+                parseInt(new Date().valueOf()/1000)+10000
+            );
+        }
+
     }
     const handleAction = async() => {
         setLoading(true)
-        const isApprovalTxn = tokenFrom === "SHM" ? ethers.utils.parseUnits(shmAllowance.toString()).lte(shmInputAmount.toString()) : ethers.utils.parseUnits(tstAllowance.toString()).lte(tstInputAmount.toString());
+        const isApprovalTxn = tokenFrom === "TST" && ethers.utils.parseUnits(tstAllowance.toString()).lte(tstInputAmount.toString());
         const func = isApprovalTxn ? handleApprove : handleSwap
 
         try {
@@ -592,9 +546,7 @@ function DeFi() {
 
         if (!selectedAddress) {
             return "Connect Wallet"
-        } else if (tokenFrom === "SHM" && ethers.utils.parseUnits(shmInputAmount.toString()).lte(shmAllowance.toString())) {
-            return "Approve SHM"
-        }  else if (tokenFrom === "TST" && ethers.utils.parseUnits(tstInputAmount.toString()).lte(tstAllowance.toString())) {
+        }   else if (tokenFrom === "TST" && ethers.utils.parseUnits(tstInputAmount.toString()).lte(tstAllowance.toString())) {
             return "Approve TST"
         } else {
             return "Swap Token"
@@ -676,7 +628,7 @@ function DeFi() {
                     }
                 }} style={{ color: '#ffffff', width: '100%', height: 50, marginTop: 10 }} >{renderSwapButtonText()}</Button>
             </div>
-            <Button type="primary"  disabled={!connected} style={{position:'absolute',bottom:1,right:0,color:'#ffffff',width:'10%',height:50,marginTop:10}} onClick={mintTST} >Mint TST Token</Button>
+            <Button type="primary"  disabled={!connected} style={{position:'absolute',bottom:50,right:50,color:'#ffffff',width:'10%',height:50,marginTop:10}} onClick={mintTST} >Mint TST Token</Button>
         </div>
     );
 }

@@ -4,7 +4,7 @@ import { Modal, message } from 'antd';
 
 export const WalletContext = createContext();
 
-const desiredNetwork = 80001;
+const desiredNetwork = 8082;
 
 export const WalletProvider = ({ children }) => {
     const [selectedAddress, setSelectedAddress] = useState(null);
