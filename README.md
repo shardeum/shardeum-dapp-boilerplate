@@ -1,41 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Shardeum Dapp Boilerplate
 
-## Getting Started
+![Homepage](/homepage.png)
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Welcome to the Shardeum Dapp Boilerplate repository! This is a comprehensive starting point for rapid prototyping your ideas on Shardeum.
+
+This boilerplate is great for:
+
+✅ Learning Blockchain fundmentals
+
+✅ Hackathon participants
+
+✅ Experiencing Shardeum
+
+
+## 🚀 Getting Started
+To begin your Shardeum dApp journey, clone this repository and install the necessary dependencies.
+
 ```
+git clone https://github.com/Shardeum/shardeum-dapp-boilerplate
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+cd shardeum-dapp-boilerplate
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+npm install
+```
+## 📖 Usecases
+There are three primary modules in the boilerplate:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- RPC: This module demonstrates the functionality of an Shardeum RPC. Be in reading useful data from the blockchain or sending transactions, rpcs serve as a gateway to the blockchain.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- NFT Minting: This module demonstrates a basic NFT minting page which let's user mint NFTs for a fixed mint price.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- DeFi: This module demonstrate the use of Uniswap V2 to swap between two tokens.
 
-## Learn More
+## 🛠️ Layout
 
-To learn more about Next.js, take a look at the following resources:
+- **Header**: An easily configurable header with wallet connect functionality along with displaying user address and balance.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Pages**: Individual pages for demonstrating functionality for 3 major verticals in web3 - RPC, NFT and Defi.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Smart Contracts**: All primary smart contracts used in the application can be found in the '**contracts**' directory and the appropriate scripts in the '**scripts**' directory.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# shardeum-dapp-boilerplate
+## ✨ Contributing Guidelines
+We warmly welcome contributions to the Shardeum Dapp Boilerplate! Whether you're fixing bugs, adding new features, or improving documentation, your help makes a big difference. 

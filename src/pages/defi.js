@@ -417,7 +417,6 @@ const TSTTOKENABI= [{
 
 const TSTContractAddress="0x5a1Cdd07b84EA4273283a717AD722c00EdE6E79E" ;
 
-// pages/defi.js
 const {Option}=Select
 const {Text}=Typography
 
@@ -447,9 +446,6 @@ function DeFi() {
             loadAllowance()
         }
     },[selectedAddress])
-
-
-
 
     const loadAllowance = async() => {
         const tstAllowance = await tstTokenContract.allowance(selectedAddress,config.UniswapRouter)
@@ -555,7 +551,7 @@ function DeFi() {
 
     return (
         <div>
-            <h1 className={[styles.header,]}>DeFi Page</h1>
+            {/* <h1 className={[styles.header,]}>DeFi Page</h1> */}
 
             <div className={styles.swapcard} style={{ width: 305 }}>
                 <Text style={styleswap.textstyle}>Swap </Text>

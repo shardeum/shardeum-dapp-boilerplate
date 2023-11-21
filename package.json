@@ -2,7 +2,7 @@
   "name": "shardeum-dapp-boilerplate",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+    "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -26,5 +26,8 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "hardhat": "^2.18.0"
+  },
+  "bin": {
+    "shardeum-dapp-boilerplate": "./src/pages/index.js"
   }
 }
