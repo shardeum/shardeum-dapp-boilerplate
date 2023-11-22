@@ -98,7 +98,6 @@ function RPC() {
 
     return (
         <div style={{ padding: '20px' }}>
-            <h1 style={{ textAlign: 'center' }}>RPC Page</h1>
             <Row gutter={16}>
                 <Col span={12}>
                     {actions.map((item, index) => (

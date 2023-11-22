@@ -9,7 +9,6 @@ function App({ Component, pageProps }) {
       <WalletHeader />
       <Component {...pageProps} />
       </WalletProvider>
-      {/* Add other global components here if necessary, like a Footer */}
     </div>
   );
 }

@@ -10,8 +10,6 @@ import UniswapAbi from "@/abis/UniswapAbi";
 import TSTTOKENABI from '@/abis/TSTTokenABI';
 
 
-
-
 const { Option } = Select
 const { Text } = Typography
 
@@ -160,8 +158,6 @@ function DeFi() {
 
     return (
         <div>
-            <h1 className={[styles.header,]}>DeFi Page</h1>
-
             <div className={styles.swapcard} style={{ width: 305 }}>
                 <Text style={styleswap.textstyle}>Swap </Text>
                 <Space direction='vertical' style={styleswap.swapContainer}>

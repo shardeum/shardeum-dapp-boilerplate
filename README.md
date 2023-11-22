@@ -23,6 +23,8 @@ git clone https://github.com/Shardeum/shardeum-dapp-boilerplate
 cd shardeum-dapp-boilerplate
 
 npm install
+
+npm run dev
 ```
 ## 📖 Usecases
 There are three primary modules in the boilerplate:

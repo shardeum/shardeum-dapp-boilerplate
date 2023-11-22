@@ -61,7 +61,7 @@ export const WalletProvider = ({ children }) => {
     }, []);
 
     return (
-        <WalletContext.Provider value={{ connected, selectedAddress, balance,visible,signer,setVisible,connectWallet, disconnectWallet,setSelectedAddress,setBalance }}>
+        <WalletContext.Provider value={{ connected, selectedAddress, balance,visible,signer,setConnected,setVisible,connectWallet, disconnectWallet,setSelectedAddress,setBalance }}>
             {children}
         </WalletContext.Provider>
     );
