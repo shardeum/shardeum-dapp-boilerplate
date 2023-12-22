@@ -23,7 +23,7 @@ To quickly set up the Shardeum dApp Boilerplate, you can use our npm library. Th
 Run the following command in your terminal:
 
 ```bash
-npx create-shardeum-dapp@1.0.7 --name test-project
+npx create-shardeum-dapp@latest --name test-project
 ```
 
 After the process completes, navigate to your new project and start the development server:
