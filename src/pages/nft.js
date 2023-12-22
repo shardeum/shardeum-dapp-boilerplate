@@ -433,7 +433,7 @@ const MintNFT = () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         await console.log(signer.getAddress());
-        const contractNFT = new ethers.Contract(`0x1203A990EB1a941BFf573bCE994F5073aCd14a25`, NFTMinter, signer);
+        const contractNFT = new ethers.Contract(`0x6ef363066a9cc57ddb68f94632968e0b30b8779e`, NFTMinter, signer);
 
         let overrides = {
           value: ethers.utils.parseEther("1"), // Cost to mint: 1 SHM

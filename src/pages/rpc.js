@@ -10,16 +10,16 @@ function RPC() {
     const { connected } = useContext(WalletContext);
     const [loading, setLoading] = useState(false);
     const isConnected = connected;
-    const provider = new ethers.providers.JsonRpcProvider('https://rpc.ankr.com/polygon_mumbai');
+    const provider = new ethers.providers.JsonRpcProvider('https://dapps.shardeum.org');
 
     const actions = [
         {
-            label: 'Current Network',
+            label: 'Network ID',
             action: async () => {
                 const network = await provider.getNetwork();
-                return `Current Network: ${network.name}`;
+                return ` Network ID: ${network.chainId}`;
             },
-            definition: "Gets the name of the current network configured with the provider."
+            definition: "Gets the network id of the current network configured with the provider."
         },
         {
             label: 'Block Number',
