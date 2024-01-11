@@ -66,7 +66,6 @@ function RPC() {
     {
       label: "Transaction Count",
       action: async () => {
-        // Get the address from the connected wallet
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
