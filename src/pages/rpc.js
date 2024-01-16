@@ -66,11 +66,17 @@ function RPC() {
     {
       label: "Transaction Count",
       action: async () => {
-        const address = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
-        const txCount = await provider.getTransactionCount(address);
-        return `Transaction Count for ${address}: ${txCount}`;
+        try {
+          const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          const txCount = await provider.getTransactionCount(accounts[0]);
+          return `Transaction Count for ${accounts[0]}: ${txCount}`;
+        } catch (error) {
+          throw new Error(`Error getting transaction count: ${error.message}`);
+        }
       },
-      definition: "Gets the number of transactions sent from an address.",
+      definition: "Gets the number of transactions sent from the connected address.",
     },
     {
       label: "Code at Address",
