@@ -24,7 +24,7 @@ function RPC() {
         return ` Network ID: ${network.chainId}`;
       },
       definition:
-        "Gets the network id of the current network configured with the provider.",
+        "Gets the network ID of the current network configured with the provider.",
     },
     {
       label: "Block Number",
@@ -49,10 +49,8 @@ function RPC() {
           method: "eth_requestAccounts",
         });
         const balance = await provider.getBalance(accounts[0]);
-        return `Balance of ${accounts[0]}: ${ethers.utils.formatEther(
-          balance
-        )} SHM`;
-      },
+        return `Balance of ${accounts[0]}: ${parseFloat(ethers.utils.formatEther(balance)).toFixed(2)} SHM`;
+        },
       definition: "Fetches the balance of a specific Shardeum address.",
     },
     {
