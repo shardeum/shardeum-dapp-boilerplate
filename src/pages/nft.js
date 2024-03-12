@@ -434,7 +434,7 @@ const MintNFT = () => {
         const signer = provider.getSigner();
         await console.log(signer.getAddress());
         const contractNFT = new ethers.Contract(
-          `0x6ef363066a9cc57ddb68f94632968e0b30b8779e`,
+          `0x00BdeF4Db81Ca5d666d3B892Fb9E062334707633`,
           NFTMinter,
           signer
         );
@@ -456,10 +456,10 @@ const MintNFT = () => {
             <span>
               Minting completed! Transaction hash:
               <Link
-                href={`https://explorer-sphinx.shardeum.org/transaction/${transaction.hash}`}
+                href={`https://explorer-hackathon.shardeum.org/${transaction.hash}`}
                 target="_blank"
               >
-                {` https://explorer-sphinx.shardeum.org/transaction/${transaction.hash}`}
+                {`https://explorer-hackathon.shardeum.org/${transaction.hash}`}
               </Link>
             </span>
           ),

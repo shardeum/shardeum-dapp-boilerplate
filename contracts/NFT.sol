@@ -3,11 +3,9 @@ pragma solidity ^0.8.3;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract NFTMinter is ERC721URIStorage {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
+    uint256 private _tokenIds = 0; // Initialize token ID counter
     
     // Set the price for minting an NFT
     uint256 public mintPrice = 1 ether;
@@ -18,10 +16,12 @@ contract NFTMinter is ERC721URIStorage {
         // Ensure exactly 1 Ether is sent
         require(msg.value == mintPrice, "You must send exactly 1 SHM to mint an NFT");
         
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
+        _tokenIds += 1; // Increment the token ID
+        uint256 newItemId = _tokenIds;
+        
         _mint(recipient, newItemId);
         _setTokenURI(newItemId, tokenURI);
+        
         return newItemId;
     }
 }

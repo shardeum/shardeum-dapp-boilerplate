@@ -13,7 +13,7 @@ function RPC() {
   const [loading, setLoading] = useState(false);
   const isConnected = connected;
   const provider = new ethers.providers.JsonRpcProvider(
-    "https://sphinx.shardeum.org/"
+    "https://hackathon.shardeum.org/"
   );
 
   const actions = [
