@@ -456,10 +456,10 @@ const MintNFT = () => {
             <span>
               Minting completed! Transaction hash:
               <Link
-                href={`https://explorer-hackathon.shardeum.org/${transaction.hash}`}
+                href={`https://explorer-hackathon.shardeum.org/transaction/${transaction.hash}`}
                 target="_blank"
               >
-                {`https://explorer-hackathon.shardeum.org/${transaction.hash}`}
+                {`https://explorer-hackathon.shardeum.org/transaction/${transaction.hash}`}
               </Link>
             </span>
           ),
