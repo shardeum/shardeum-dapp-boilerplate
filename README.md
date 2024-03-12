@@ -16,18 +16,6 @@ This boilerplate is great for:
 
 ## 🚀 Getting Started
 
-### Option 1: Using NPM Library
-
-To quickly set up the Shardeum dApp Boilerplate, you can use our npm library. This will clone the repository, install all dependencies, and create a project named `test-project` with the boilerplate inside it.
-
-Run the following command in your terminal:
-
-```bash
-npx create-shardeum-dapp@latest --name test-project
-```
-
-After the process completes, navigate to your new project and start the development server:
-
 ```bash
 cd test-project
 npm run dev
