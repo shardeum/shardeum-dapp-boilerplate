@@ -2,7 +2,6 @@
 
 ![Homepage](/homepage.png)
 
-
 Welcome to the Shardeum Dapp Boilerplate repository! This is a comprehensive starting point for rapid prototyping your ideas on Shardeum.
 
 This boilerplate is great for:
@@ -12,7 +11,6 @@ This boilerplate is great for:
 ✅ Hackathon participants
 
 ✅ Experiencing Shardeum
-
 
 ## 🚀 Getting Started
 
@@ -36,14 +34,16 @@ npm install
 
 npm run dev
 ```
-## 📖 Usecases
+
+## 📖 Use Cases
+
 There are three primary modules in the boilerplate:
 
-- RPC: This module demonstrates the functionality of an Shardeum RPC. Be in reading useful data from the blockchain or sending transactions, rpcs serve as a gateway to the blockchain.
+- RPC: This module demonstrates the functionality of an Shardeum RPC. Be in reading useful data from the blockchain or sending transactions, RPCs serve as a gateway to the blockchain.
 
-- NFT Minting: This module demonstrates a basic NFT minting page which let's user mint NFTs for a fixed mint price.
+- NFT Minting: This module demonstrates a basic NFT minting page which lets a user mint NFTs for a fixed mint price.
 
-- DeFi: This module demonstrate the use of Uniswap V2 to swap between two tokens.
+- DeFi: This module demonstrates the use of Uniswap V2 to swap between two tokens.
 
 ## 🛠️ Layout
 
@@ -54,4 +54,5 @@ There are three primary modules in the boilerplate:
 - **Smart Contracts**: All primary smart contracts used in the application can be found in the '**contracts**' directory and the appropriate scripts in the '**scripts**' directory.
 
 ## ✨ Contributing Guidelines
-We warmly welcome contributions to the Shardeum Dapp Boilerplate! Whether you're fixing bugs, adding new features, or improving documentation, your help makes a big difference. 
+
+We warmly welcome contributions to the Shardeum Dapp Boilerplate! Whether you're fixing bugs, adding new features, or improving documentation, your help makes a big difference.
