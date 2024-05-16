@@ -14,7 +14,10 @@ This boilerplate is great for:
 
 ## 🚀 Getting Started
 
+### Option 1: Direct Setup
+
 ```bash
+npx create-shardeum-dapp-boilerplate@latest --name test-project
 cd test-project
 npm run dev
 ```
