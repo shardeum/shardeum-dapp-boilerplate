@@ -1,17 +1,33 @@
 # Shardeum dApp Boilerplate
 
-A complete, production-ready boilerplate for building decentralized applications (dApps) on **Shardeum EVM Testnet**. This project includes a simple ERC20 token contract and a React frontend with wallet integration.
+A complete, production-ready boilerplate for building decentralized applications (dApps) on **Shardeum EVM Testnet**. This project includes an enhanced ERC20 token contract with OpenZeppelin security features and a React frontend with wallet integration.
 
 ![Shardeum dApp](https://shardeum.org/Shardeum.png)
 
+## ⚠️ Security Disclaimer
+
+**This is a reference boilerplate only.** Security audits, comprehensive testing, and safe deployment practices are the responsibility of the user/developer. Always:
+
+- Conduct thorough security audits before deploying to production
+- Test extensively on testnets before mainnet deployment
+- Never expose private keys or sensitive information
+- Use professional audit services for production applications
+- Run security analysis tools (see Security Testing section below)
+
 ## ✨ Features
 
-- ✅ **Smart Contract**: ERC20 token (MyToken) with 1M fixed supply
-- ✅ **React + TypeScript**: Modern frontend with Vite
-- ✅ **Wallet Integration**: MetaMask connection with network switching
-- ✅ **Token Interface**: View balances and transfer tokens
+- ✅ **Enhanced Smart Contract**: ERC20 token with OpenZeppelin security features
+  - ERC20Burnable for token burning
+  - ERC20Permit for gasless approvals (EIP-2612)
+  - Ownable for access control
+  - Mint function for additional token creation
+- ✅ **React + TypeScript**: Modern frontend with Vite and strict type safety
+- ✅ **Wallet Integration**: MetaMask connection with proper event handling
+- ✅ **Token Interface**: View balances, transfer tokens with validation
+- ✅ **Error Handling**: Comprehensive error states and user feedback
 - ✅ **Transaction Explorer**: Direct links to Shardeum explorer
 - ✅ **Pre-configured**: Ready for Shardeum EVM Testnet (Chain ID: 8119)
+- ✅ **Security Tools**: SAST integration with Slither and Aderyn
 
 ## 🚀 Quick Start
 
@@ -25,7 +41,7 @@ npm install
 
 ### Option 2: Start from Scratch
 
-Follow the complete tutorial in our [documentation](/docs/developer/tutorial).
+Follow the complete tutorial in our [documentation](https://docs.shardeum.org/docs/developer/deploy-dapps/tutorial).
 
 ## 📋 Prerequisites
 
@@ -96,42 +112,69 @@ shardeum-dapp-boilerplate/
 
 ### MyToken.sol
 
-A simple ERC20 token implementation:
+An enhanced ERC20 token implementation with OpenZeppelin security features:
 
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MyToken is ERC20 {
-    constructor() ERC20("My Token", "MTK") {
+/**
+ * @title MyToken
+ * @dev Implementation of a basic ERC20 token with additional safety features
+ * Uses OpenZeppelin's secure and tested contracts
+ */
+contract MyToken is ERC20, ERC20Burnable, ERC20Permit, Ownable {
+    constructor()
+        ERC20("My Token", "MTK")
+        ERC20Permit("My Token")
+        Ownable(msg.sender)
+    {
         _mint(msg.sender, 1_000_000 * 10 ** decimals());
+    }
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
     }
 }
 ```
 
 **Features**:
-- Fixed supply of 1,000,000 tokens
-- Mints all tokens to deployer on deployment
-- Standard ERC20 functions (transfer, approve, etc.)
+- **ERC20**: Standard token functionality (transfer, approve, balanceOf)
+- **ERC20Burnable**: Users can burn their own tokens
+- **ERC20Permit**: Gasless approvals using EIP-2612 signatures
+- **Ownable**: Access control for owner-only functions
+- **Mint Function**: Owner can mint additional tokens
+- Initial supply of 1,000,000 tokens minted to deployer
 
 ## 🚢 Deployment
 
 ### 1. Deploy Smart Contract
 
+Use the convenient npm script:
+
+```bash
+npm run deploy:testnet
+```
+
+Or use Hardhat directly:
+
 ```bash
 npx hardhat run scripts/deploy.ts --network shardeumTestnet
 ```
 
-**Save the deployed contract address!** You'll need it in step 2.
+**✨ The deploy script automatically updates `src/config/networks.ts` with your contract address!**
 
-### 2. Update Frontend Configuration
+### 2. Verify Contract (Optional but Recommended)
 
-Edit `src/config/networks.ts` and replace the contract address:
+Verify your contract on the Shardeum explorer:
 
-```typescript
-export const TOKEN_ADDRESS = "0xYOUR_DEPLOYED_CONTRACT_ADDRESS";
+```bash
+npx hardhat verify --network shardeumTestnet <DEPLOYED_ADDRESS>
 ```
 
 ### 3. Run the Frontend
@@ -211,7 +254,8 @@ npm run build
 npm run preview
 
 # Deploy smart contract
-npx hardhat run scripts/deploy.ts --network shardeumTestnet
+npm run deploy:testnet
+# Or: npx hardhat run scripts/deploy.ts --network shardeumTestnet
 
 # Compile contracts
 npx hardhat compile
@@ -219,6 +263,88 @@ npx hardhat compile
 # Run Hardhat console
 npx hardhat console --network shardeumTestnet
 ```
+
+## 🔒 Security Testing
+
+Understanding your smart contract's security posture is critical before deployment. This boilerplate recommends using industry-standard SAST (Static Application Security Testing) tools:
+
+### Slither - Static Analysis Tool
+
+[Slither](https://github.com/crytic/slither) is a Solidity static analysis framework that detects vulnerabilities and suggests code improvements.
+
+**Installation:**
+```bash
+pip3 install slither-analyzer
+```
+
+**Run Slither:**
+```bash
+slither .
+```
+
+Slither will analyze your contracts and provide:
+- Vulnerability detection (reentrancy, integer overflow, etc.)
+- Code quality suggestions
+- Gas optimization recommendations
+- Best practice violations
+
+**Example Output:**
+```
+MyToken.mint(address,uint256) (contracts/MyToken.sol#27-29) should emit an event for:
+  - _mint(to,amount) (contracts/MyToken.sol#28)
+```
+
+### Aderyn - Rust-based Solidity Auditor
+
+[Aderyn](https://github.com/Cyfrin/aderyn) is a fast, Rust-based static analyzer designed for Solidity smart contracts.
+
+**Installation:**
+```bash
+cargo install aderyn
+```
+
+Or use with `cargo-binstall`:
+```bash
+cargo binstall aderyn
+```
+
+**Run Aderyn:**
+```bash
+aderyn .
+```
+
+Aderyn provides:
+- Fast analysis with detailed reports
+- Security vulnerability detection
+- Code quality metrics
+- markdown report generation
+
+**Generate detailed report:**
+```bash
+aderyn . --output report.md
+```
+
+### Best Practices
+
+1. **Run both tools** - Slither and Aderyn complement each other and may catch different issues
+2. **Fix critical issues** - Always address high and medium severity findings
+3. **Review warnings** - Even low-severity warnings can indicate code quality issues
+4. **Run before deployment** - Make security analysis part of your deployment checklist
+5. **Professional audit** - For production applications, consider professional security audits
+
+### Quick Security Checklist
+
+Before deploying to production:
+
+- [ ] Run `slither .` and address all findings
+- [ ] Run `aderyn .` and review the report
+- [ ] Test all functions on testnet
+- [ ] Verify access control (onlyOwner functions)
+- [ ] Check for reentrancy vulnerabilities
+- [ ] Validate input parameters
+- [ ] Review token economics (mint, burn, supply)
+- [ ] Ensure private keys are secure
+- [ ] Consider professional security audit
 
 ## 📚 What You'll Learn
 
@@ -283,13 +409,16 @@ Make sure you've deployed the contract and updated `TOKEN_ADDRESS` in `src/confi
 
 ## 📖 Additional Resources
 
-- [Full Tutorial](/docs/developer/tutorial) - Step-by-step guide
+- [Full Tutorial](https://docs.shardeum.org/docs/developer/deploy-dapps/tutorial) - Step-by-step guide
 - [Shardeum Documentation](https://docs.shardeum.org)
 - [Shardeum Discord](https://discord.com/invite/shardeum)
 - [Hardhat Documentation](https://hardhat.org/docs)
 - [ethers.js Documentation](https://docs.ethers.org/)
 - [React Documentation](https://react.dev)
 - [Vite Documentation](https://vitejs.dev)
+- [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts/)
+- [Slither Documentation](https://github.com/crytic/slither)
+- [Aderyn Documentation](https://github.com/Cyfrin/aderyn)
 
 ## 🤝 Contributing
 

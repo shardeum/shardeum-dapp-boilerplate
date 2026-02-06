@@ -46,6 +46,50 @@
   border-radius: 8px;
 }
 
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ff4444;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1rem auto;
+  max-width: 600px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.error-message p {
+  margin: 0;
+  flex: 1;
+}
+
+.clear-error-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  margin-left: 1rem;
+  transition: opacity 0.2s;
+}
+
+.clear-error-btn:hover {
+  opacity: 0.7;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .network-warning {
   background: #ff6b6b;
   color: white;
@@ -140,6 +184,51 @@ button[type="submit"]:hover:not(:disabled) {
 button[type="submit"]:disabled {
   background: #333;
   cursor: not-allowed;
+}
+
+.error-box,
+.success-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  animation: slideIn 0.3s ease-out;
+}
+
+.error-box {
+  background: #ff4444;
+  color: white;
+}
+
+.success-box {
+  background: #4caf50;
+  color: white;
+}
+
+.error-box p,
+.success-box p {
+  margin: 0;
+  flex: 1;
+}
+
+.close-btn,
+.retry-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 1rem;
+  transition: background 0.2s;
+}
+
+.close-btn:hover,
+.retry-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .tx-hash {

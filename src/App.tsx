@@ -4,14 +4,22 @@ import { SHARDEUM_TESTNET } from './config/networks';
 import './App.css';
 
 function App() {
-  const { account, chainId, connectWallet, disconnectWallet, switchNetwork } = useWallet();
+  const { account, chainId, connectWallet, disconnectWallet, switchNetwork, error, clearError } = useWallet();
 
-  const isCorrectNetwork = chainId === SHARDEUM_TESTNET.chainId;
+  // Case-insensitive chainId comparison (MetaMask can return uppercase or lowercase hex)
+  const isCorrectNetwork = chainId?.toLowerCase() === SHARDEUM_TESTNET.chainId.toLowerCase();
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Shardeum dApp</h1>
+
+        {error && (
+          <div className="error-message">
+            <p>❌ {error}</p>
+            <button onClick={clearError} className="clear-error-btn">✕</button>
+          </div>
+        )}
 
         <div className="wallet-controls">
           {!account ? (
