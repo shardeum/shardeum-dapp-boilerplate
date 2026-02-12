@@ -1,0 +1,280 @@
+.App {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .App {
+    padding: 2rem;
+  }
+}
+
+.App-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.wallet-controls {
+  margin-top: 1rem;
+}
+
+.connect-btn,
+.disconnect-btn {
+  background: #646cff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.connect-btn:hover,
+.disconnect-btn:hover {
+  background: #535bf2;
+}
+
+.wallet-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  background: #1a1a1a;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ff4444;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1rem auto;
+  max-width: 600px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.error-message p {
+  margin: 0;
+  flex: 1;
+}
+
+.clear-error-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  margin-left: 1rem;
+  transition: opacity 0.2s;
+}
+
+.clear-error-btn:hover {
+  opacity: 0.7;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.network-warning {
+  background: #ff6b6b;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem auto;
+  max-width: 600px;
+  text-align: center;
+}
+
+.network-warning button {
+  margin-top: 0.5rem;
+  background: white;
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.network-warning button:hover {
+  background: #f0f0f0;
+  border-color: white;
+}
+
+.card {
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 1rem 0;
+}
+
+.balance {
+  text-align: center;
+  padding: 1.5rem;
+  background: #2a2a2a;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.balance h3 {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+  color: #646cff;
+}
+
+.transfer-form {
+  margin-top: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #888;
+}
+
+.form-group input {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #2a2a2a;
+  color: white;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+button[type="submit"] {
+  width: 100%;
+  background: #646cff;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1rem;
+  transition: background 0.3s;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background: #535bf2;
+}
+
+button[type="submit"]:disabled {
+  background: #333;
+  cursor: not-allowed;
+}
+
+.error-box,
+.success-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  animation: slideIn 0.3s ease-out;
+}
+
+.error-box {
+  background: #ff4444;
+  color: white;
+}
+
+.success-box {
+  background: #4caf50;
+  color: white;
+}
+
+.error-box p,
+.success-box p {
+  margin: 0;
+  flex: 1;
+}
+
+.close-btn,
+.retry-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 1rem;
+  transition: background 0.2s;
+}
+
+.close-btn:hover,
+.retry-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tx-hash {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #2a2a2a;
+  border-radius: 6px;
+}
+
+.tx-hash a {
+  color: #646cff;
+  word-break: break-all;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .App {
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .wallet-info {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .wallet-info p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .balance h3 {
+    font-size: 1.5rem;
+  }
+
+  .connect-btn,
+  .disconnect-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+  }
+}
