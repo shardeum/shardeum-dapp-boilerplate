@@ -17,7 +17,7 @@ contract MyToken is ERC20, ERC20Burnable, ERC20Permit, Ownable {
      * @notice Creates 1,000,000 tokens with 18 decimals
      */
     constructor() 
-        ERC20("My Token", "MTK") 
+        ERC20("My Token", "MTK")
         ERC20Permit("My Token")
         Ownable(msg.sender)
     {
