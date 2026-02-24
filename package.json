@@ -1,50 +1,36 @@
 {
   "name": "shardeum-dapp-boilerplate",
-  "version": "0.1.0",
   "private": true,
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "deploy:testnet": "npx hardhat run scripts/deploy.ts --network shardeumTestnet",
+    "compile": "npx hardhat compile"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.2.6",
-    "@metamask/detect-provider": "^2.0.0",
-    "@openzeppelin/contracts": "^5.0.2",
-    "@uniswap/v2-periphery": "^1.1.0-beta.0",
-    "antd": "^5.10.0",
-    "axios": "^1.5.1",
-    "dotenv": "^16.3.1",
-    "ethers": "^5.7.2",
-    "next": "^13.5.4",
-    "node-fetch": "^3.3.2",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-router-dom": "^6.17.0",
-    "viem": "^1.16.2",
-    "wagmi": "^1.4.3"
+    "ethers": "6.10.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
-    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
-    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
-    "@nomicfoundation/hardhat-verify": "^2.0.4",
-    "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@nomiclabs/hardhat-etherscan": "^3.1.8",
-    "@typechain/ethers-v5": "^10.2.1",
-    "@typechain/hardhat": "^6.1.6",
-    "@types/chai": "^4.3.11",
-    "@types/mocha": "^10.0.6",
-    "chai": "^4.3.10",
-    "hardhat": "^2.18.0",
-    "hardhat-gas-reporter": "^1.0.9",
-    "solidity-coverage": "^0.8.5",
-    "ts-node": "^10.9.2",
-    "typechain": "^8.3.2",
-    "typescript": "^5.3.3"
-  },
-  "bin": {
-    "shardeum-dapp-boilerplate": "./src/pages/index.js"
+    "@nomicfoundation/hardhat-toolbox": "4.0.0",
+    "@openzeppelin/contracts": "5.0.2",
+    "@types/react": "18.2.55",
+    "@types/react-dom": "18.2.19",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
+    "@vitejs/plugin-react": "4.2.1",
+    "dotenv": "16.4.1",
+    "eslint": "8.56.0",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-react-refresh": "0.4.5",
+    "hardhat": "2.19.4",
+    "ts-node": "10.9.2",
+    "typescript": "5.3.3",
+    "vite": "5.1.0"
   }
 }
